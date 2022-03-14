@@ -184,9 +184,6 @@ void charybdis_set_pointer_dragscroll_enabled(bool enable) {
     maybe_update_pointing_device_cpi(&g_charybdis_config);
 }
 
-void pointing_device_init_kb(void) {
-    maybe_update_pointing_device_cpi(&g_charybdis_config);
-}
 
 #    ifndef CONSTRAIN_HID
 #        define CONSTRAIN_HID(value) ((value) < -127 ? -127 : ((value) > 127 ? 127 : (value)))
@@ -419,18 +416,82 @@ void pointing_device_driver_init(void) {
 }
 
 report_mouse_t pointing_device_driver_get_report(report_mouse_t mouse_report) {
-    report_mouse_t pmw3360_report;
-    pmw3360_report = pmw3360_get_report(mouse_report);
+    if (is_keyboard_left()) {
+        report_mouse_t cirque_pinnacle_report;
+        cirque_pinnacle_report = cirque_pinnacle_get_report_custom(mouse_report);
 
-    mouse_report.x = pmw3360_report.x;
-    mouse_report.y = pmw3360_report.y;
+        mouse_report.x = cirque_pinnacle_report.x;
+        mouse_report.y = cirque_pinnacle_report.y;
+    } else {
+        // report_mouse_t pmw3360_report;
+        // pmw3360_report = pmw3360_get_report(mouse_report);
 
+        // mouse_report.x = pmw3360_report.x;
+        // mouse_report.y = pmw3360_report.y;
+
+        
+        pointing_device_task_charybdis(&mouse_report);
+        mouse_report = pointing_device_task_user(mouse_report);
+    }
     return mouse_report;
 }
 
 uint16_t pointing_device_driver_get_cpi(void) {
-    return 0;
+    return cirque_pinnacle_get_scale();
 }
+
+report_mouse_t cirque_pinnacle_get_report_custom(report_mouse_t mouse_report) {
+    pinnacle_data_t touchData = cirque_pinnacle_read_data();
+    static uint16_t x = 0, y = 0, mouse_timer = 0;
+    int8_t          report_x = 0, report_y = 0;
+    static bool     is_z_down = false;
+
+    cirque_pinnacle_scale_data(&touchData, cirque_pinnacle_get_scale(), cirque_pinnacle_get_scale()); // Scale coordinates to arbitrary X, Y resolution
+
+    if (x && y && touchData.xValue && touchData.yValue) {
+        report_x = (int8_t)(touchData.xValue - x);
+        report_y = (int8_t)(touchData.yValue - y);
+    }
+    x = touchData.xValue;
+    y = touchData.yValue;
+
+    if ((bool)touchData.zValue != is_z_down) {
+        is_z_down = (bool)touchData.zValue;
+        if (!touchData.zValue) {
+            if (timer_elapsed(mouse_timer) < CIRQUE_PINNACLE_TAPPING_TERM && mouse_timer != 0) {
+                mouse_report.buttons = pointing_device_handle_buttons(mouse_report.buttons, true, POINTING_DEVICE_BUTTON1);
+                pointing_device_set_report(mouse_report);
+                pointing_device_send();
+#if TAP_CODE_DELAY > 0
+                wait_ms(TAP_CODE_DELAY);
+#endif
+                mouse_report.buttons = pointing_device_handle_buttons(mouse_report.buttons, false, POINTING_DEVICE_BUTTON1);
+                pointing_device_set_report(mouse_report);
+                pointing_device_send();
+            }
+        }
+        mouse_timer = timer_read();
+    }
+    if (timer_elapsed(mouse_timer) > (CIRQUE_PINNACLE_TOUCH_DEBOUNCE)) {
+        mouse_timer = 0;
+    }
+    mouse_report.x = report_x;
+    mouse_report.y = report_y;
+
+    return mouse_report;
+}
+
 void pointing_device_driver_set_cpi(uint16_t cpi) {
-    pmw3360_set_cpi(cpi);
+    if (is_keyboard_left()) {
+        cirque_pinnacle_set_scale(cpi);
+    } else {
+        pmw3360_set_cpi(cpi);
+    }
+}
+
+void pointing_device_init_kb(void) {
+    maybe_update_pointing_device_cpi(&g_charybdis_config);
+    if (!is_keyboard_left()) {
+        pmw3360_set_cpi(200);
+    }
 }

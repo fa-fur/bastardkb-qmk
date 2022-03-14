@@ -123,4 +123,7 @@ bool charybdis_get_pointer_dragscroll_enabled(void);
  * are translated into horizontal and vertical scroll movements.
  */
 void charybdis_set_pointer_dragscroll_enabled(bool enable);
+
+
+report_mouse_t cirque_pinnacle_get_report_custom(report_mouse_t mouse_report);
 #endif  // POINTING_DEVICE_ENABLE
