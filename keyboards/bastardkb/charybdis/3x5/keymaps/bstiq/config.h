@@ -75,10 +75,9 @@
 
 /** Double custom build features **/
 
-#define CIRQUE_PINNACLE_ADDR 0x2A
-
 #define ENCODERS_PAD_A { B1 }
 #define ENCODERS_PAD_B { B2 }
 
 #define SPLIT_POINTING_ENABLE
 #define POINTING_DEVICE_COMBINED
+#define CIRQUE_PINNACLE_ADDR 0x2A
