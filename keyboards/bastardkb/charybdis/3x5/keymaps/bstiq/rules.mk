@@ -15,11 +15,11 @@ RGB_MATRIX_ENABLE = no
 RGBLIGHT_ENABLE = yes
 
 ENCODER_ENABLE = yes
-MOUSEKEY_ENABLE = yes
 
-POINTING_DEVICE_DRIVER = custom
+# POINTING_DEVICE_DRIVER = pmw3360
+POINTING_DEVICE_DRIVER = pmw3360
+
+#POINTING_DEVICE_DRIVER = custom
 
 #SRC += analog.c drivers/sensors/pmw3360.c drivers/sensors/cirque_pinnacle.c drivers/sensors/cirque_pinnacle_i2c.c
 #QUANTUM_LIB_SRC += spi_master.c i2c_master.c #pointing_device_drivers.c
-SRC += drivers/sensors/pmw3360.c
-QUANTUM_LIB_SRC += spi_master.c i2c_master.c

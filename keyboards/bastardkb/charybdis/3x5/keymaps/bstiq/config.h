@@ -71,9 +71,7 @@
 
 /** Charybdis-specific features. */
 
-#ifdef POINTING_DEVICE_ENABLE
 #define CHARYBDIS_DRAGSCROLL_REVERSE_X
-#endif  // POINTING_DEVICE_ENABLE
 
 /** Double custom build features **/
 
@@ -81,3 +79,6 @@
 
 #define ENCODERS_PAD_A { B1 }
 #define ENCODERS_PAD_B { B2 }
+
+#define SPLIT_POINTING_ENABLE
+#define POINTING_DEVICE_COMBINED
