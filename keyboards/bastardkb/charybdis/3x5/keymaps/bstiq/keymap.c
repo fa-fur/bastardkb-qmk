@@ -54,6 +54,10 @@ enum charybdis_keymap_bstiq_layers {
 #define WH_D KC_MS_WH_DOWN
 #define WH_U KC_MS_WH_UP
 
+/** Convenience key shorthands. */
+#define U_NA KC_NO // Present but not available for use.
+#define U_NU KC_NO // Available but not used.
+
 // clang-format off
 /** Convenience macro. */
 #define _KC_LAYOUT_wrapper(                                                                             \
@@ -72,12 +76,10 @@ enum charybdis_keymap_bstiq_layers {
        B,    Z,    P,    O, QUOT,  DOT,    V,    D,    L,    J, \
        A,    U,    I,    E, COMM,    C,    T,    S,    R,    N, \
        W,    Y,    X, SLSH,    K,    M,    Q,    G,    H,    F, \
-       BSP_NAV, ENT_MBO, TAB_MED,    ESC_SYM, SPC_NUM)
+       ENT_MBO, U_NU, TAB_MED,       ESC_SYM, SPC_NUM)
 
-/** Convenience key shorthands. */
-#define U_NA KC_NO // Present but not available for use.
-#define U_NU KC_NO // Available but not used.
-
+     //  BSP_NAV, ENT_MBO, TAB_MED,    ESC_SYM, SPC_NUM)
+  
 /** Convenience row shorthands. */
 #define __________________RESET_L__________________   RESET,    U_NA,    U_NA,    U_NA,    U_NA
 #define __________________RESET_R__________________    U_NA,    U_NA,    U_NA,    U_NA,   RESET
@@ -91,8 +93,8 @@ enum charybdis_keymap_bstiq_layers {
 // Buttons.
 #define LAYOUT_LAYER_MBO                                                                      \
     __________________RESET_L__________________, USR_RDO, USR_PST, USR_CPY, USR_CUT, USR_UND, \
-    ______________HOME_ROW_GASC_L______________, KC_CAPS, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
-    KC_BTN3, KC_ALGR, KC_BTN2, KC_BTN1,    U_NA,  KC_INS, KC_HOME, KC_PGDN, KC_PGUP,  KC_END, \
+    ______________HOME_ROW_GASC_L______________, KC_BSPC, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, \
+    KC_BTN3, KC_ALGR, KC_BTN2, KC_BTN1,    U_NA,  KC_DEL, KC_HOME, KC_PGDN, KC_PGUP,  KC_END, \
                          U_NA,    U_NA,    U_NA,  KC_ENT,  KC_DEL
 
 // Media.
@@ -113,22 +115,24 @@ enum charybdis_keymap_bstiq_layers {
 #define LAYOUT_LAYER_MOUSE                                                                    \
     S_D_MOD, USR_PST, USR_CPY, USR_CUT, USR_UND, USR_RDO, USR_PST, USR_CPY, USR_CUT, USR_UND, \
     DPI_MOD, DRGSCRL, KC_LSFT, KC_LCTL, _______,    U_NU,    MS_L,    MS_D,    MS_U,    MS_R, \
-    USR_RDO, USR_PST, USR_CPY, USR_CUT, USR_UND,    U_NU,    WH_L,    WH_D,    WH_U,    WH_R, \
-                      KC_BTN2, KC_BTN1, KC_BTN3, KC_BTN1, KC_BTN3
+    USR_RDO, USR_PST, USR_CPY, KC_BTN3, USR_UND,    U_NU,    WH_L,    WH_D,    WH_U,    WH_R, \
+                      KC_BTN1, U_NA   , KC_BTN2, KC_BTN1, KC_BTN3
 
 // Symbols.
 #define LAYOUT_LAYER_SYM                                                                      \
     KC_LCBR, KC_AMPR, KC_ASTR, KC_LPRN, KC_RCBR, __________________RESET_R__________________, \
     KC_COLN,  KC_DLR, KC_PERC, KC_CIRC, KC_PLUS, ______________HOME_ROW_GASC_R______________, \
-    KC_TILD, KC_EXLM,   KC_AT, KC_HASH, KC_PIPE, ______________HOME_ROW_ALGR_R______________, \
-                      KC_LPRN, KC_RPRN, KC_UNDS,    U_NA,    U_NA
+    KC_TILD, KC_EXLM,   KC_AT, KC_HASH, KC_UNDS, ______________HOME_ROW_ALGR_R______________, \
+                      KC_LPRN, U_NA   , KC_RPRN,    U_NA,    U_NA
+                      // KC_LPRN, KC_RPRN, KC_UNDS,    U_NA,    U_NA
 
 // Numerals.
 #define LAYOUT_LAYER_NUM                                                                      \
     KC_LBRC,    KC_7,    KC_8,    KC_9, KC_RBRC, __________________RESET_R__________________, \
     KC_SCLN,    KC_4,    KC_5,    KC_6,  KC_EQL, ______________HOME_ROW_GASC_R______________, \
-     KC_GRV,    KC_1,    KC_2,    KC_3, KC_BSLS, ______________HOME_ROW_ALGR_R______________, \
-                       KC_DOT,    KC_0, KC_MINS,    U_NA,    U_NA
+     KC_GRV,    KC_1,    KC_2,    KC_3, KC_MINS, ______________HOME_ROW_ALGR_R______________, \
+                       KC_0  ,    U_NA, KC_DOT ,    U_NA,    U_NA
+                      //  KC_DOT,    KC_0, KC_MINS,    U_NA,    U_NA
 
 // Function keys.
 #define LAYOUT_LAYER_FUN                                                                      \
@@ -223,3 +227,15 @@ void shutdown_user(void) {
   rgb_matrix_update_pwm_buffers();
 #endif  // RGB_MATRIX_ENABLE
 }
+
+bool encoder_update_user(uint8_t index, bool clockwise) {
+    if (clockwise) {
+        tap_code(KC_WH_U);
+    }
+    else {
+        tap_code(KC_WH_D);
+    }
+    return false;
+}
+
+
