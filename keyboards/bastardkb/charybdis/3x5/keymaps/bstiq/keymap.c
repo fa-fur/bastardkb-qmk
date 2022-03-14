@@ -18,14 +18,14 @@
 #include QMK_KEYBOARD_H
 
 enum charybdis_keymap_bstiq_layers {
-  LAYER_BASE = 0,
-  LAYER_MBO,
-  LAYER_MEDIA,
-  LAYER_NAV,
-  LAYER_MOUSE,
-  LAYER_SYM,
-  LAYER_NUM,
-  LAYER_FUN,
+    LAYER_BASE = 0,
+    LAYER_MBO,
+    LAYER_MEDIA,
+    LAYER_NAV,
+    LAYER_MOUSE,
+    LAYER_SYM,
+    LAYER_NUM,
+    LAYER_FUN,
 };
 
 // Automatically enable sniping when the mouse layer is on.
@@ -204,12 +204,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 #if defined(POINTING_DEVICE_ENABLE) && defined(CHARYBDIS_AUTO_SNIPING_ON_LAYER)
 layer_state_t layer_state_set_kb(layer_state_t state) {
-  state = layer_state_set_user(state);
-  charybdis_set_pointer_sniping_enabled(
-      layer_state_cmp(state, CHARYBDIS_AUTO_SNIPING_ON_LAYER));
-  return state;
+    state = layer_state_set_user(state);
+    charybdis_set_pointer_sniping_enabled(layer_state_cmp(state, CHARYBDIS_AUTO_SNIPING_ON_LAYER));
+    return state;
 }
-#endif  // POINTING_DEVICE_ENABLE && CHARYBDIS_AUTO_SNIPING_ON_LAYER
+#endif // POINTING_DEVICE_ENABLE && CHARYBDIS_AUTO_SNIPING_ON_LAYER
 
 #ifdef RGB_MATRIX_ENABLE
 // Forward-declare this helper function since it is defined in rgb_matrix.c.
@@ -218,24 +217,22 @@ void rgb_matrix_update_pwm_buffers(void);
 
 void shutdown_user(void) {
 #ifdef RGBLIGHT_ENABLE
-  rgblight_enable_noeeprom();
-  rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
-  rgblight_setrgb_red();
-#endif  // RGBLIGHT_ENABLE
+    rgblight_enable_noeeprom();
+    rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+    rgblight_setrgb_red();
+#endif // RGBLIGHT_ENABLE
 #ifdef RGB_MATRIX_ENABLE
-  rgb_matrix_set_color_all(RGB_RED);
-  rgb_matrix_update_pwm_buffers();
-#endif  // RGB_MATRIX_ENABLE
+    rgb_matrix_set_color_all(RGB_RED);
+    rgb_matrix_update_pwm_buffers();
+#endif // RGB_MATRIX_ENABLE
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
     if (clockwise) {
         tap_code(KC_WH_U);
-    }
-    else {
+    } else {
         tap_code(KC_WH_D);
     }
     return false;
 }
-
 
